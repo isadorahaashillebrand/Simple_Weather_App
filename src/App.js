@@ -1,26 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import "./App.css";
+import Info from "./Components/Info/Info";
+import Country from "./Components/Country/Country";
 
-function App() {
+const App = () => {
+  let [tempSymbol, setTempSymbol] = useState("C");
+  const [cities, setCities] = useState([]);
+
+  useEffect(() => {
+    (async function fetchData() {
+      const response = await fetch(
+        "http://api.openweathermap.org/data/2.5/group?id=5368361,524901&units=imperial&appid=8dfc07466d233800b655f7c54878e145"
+      );
+      const data = await response.json();
+      setCities(data.list);
+    })();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <main>
+      <Info
+        tempSymbol={tempSymbol}
+        setTempSymbol={() => setTempSymbol(tempSymbol === "F" ? "C" : "F")}
+      />
+      <Country cities={cities[0]} tempSymbol={tempSymbol} />
+      <Country cities={cities[1]} tempSymbol={tempSymbol} />
+    </main>
   );
-}
+};
 
 export default App;
